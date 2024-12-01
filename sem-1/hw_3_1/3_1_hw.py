@@ -611,34 +611,21 @@ def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
 # Лог для метрик
 train_log, val_log = [], []
 
-def predict_with_tests(model, X):
-    """
-    Предсказания модели для данных X.
-    """
-    return model.predict(X)
-
-
 for epoch in range(15):
-    # Обучение на батчах
     for x_batch, y_batch in iterate_minibatches(X_train, y_train, batchsize=32, shuffle=True):
         loss = train_with_tests(network, x_batch, y_batch, optimizer, scheduler)
 
-    # Предсказание на тренировочном и валидационном наборах
     train_predictions = forward_with_tests(network, X_train)[-1]
     val_predictions = forward_with_tests(network, X_test)[-1]
-
-    # Получение предсказанного класса (индекс максимального значения по каждому примеру)
     train_predicted_classes = np.argmax(train_predictions, axis=1)
     val_predicted_classes = np.argmax(val_predictions, axis=1)
 
-    # Вычисление точности
     train_accuracy = np.mean(train_predicted_classes == y_train)
     val_accuracy = np.mean(val_predicted_classes == y_test)
 
     train_log.append(train_accuracy)
     val_log.append(val_accuracy)
 
-    # Отображение прогресса
     clear_output()
     print("Epoch", epoch)
     print("Train accuracy:", train_log[-1])
